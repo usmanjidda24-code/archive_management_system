@@ -1,0 +1,49 @@
+<%- include('partials/header') %>
+<div class="container position-relative z-index-2">
+    <div class="row justify-content-center align-items-center" style="min-height: 100vh;">
+        <div class="col-md-5">
+            
+            <div class="text-center mb-5" data-aos="fade-down">
+                <i class="bi bi-heptagon-fill brand-icon display-4 mb-3 d-inline-block shadow-sm rounded-circle p-3" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1);"></i>
+                <h2 class="fw-bold brand-font text-white mb-1">Nexus<span class="fw-light opacity-75">Archive</span></h2>
+                <p class="text-muted">Secure Institutional Vault</p>
+            </div>
+
+            <div class="glass-card shadow-lg border-0 rounded-4 overflow-hidden" data-aos="fade-up" data-aos-delay="100">
+                <div class="glass-header text-white text-center py-4">
+                    <h4 class="mb-0 brand-font fw-bold">Authentication Protocol</h4>
+                    <p class="mb-0 small text-white-50 mt-1">Please provide credential clearance</p>
+                </div>
+                <div class="card-body p-5">
+                    <% if (typeof error !== 'undefined' && error) { %>
+                        <div class="alert alert-danger border-danger border-opacity-50 bg-danger bg-opacity-10 text-danger alert-dismissible fade show rounded-3" role="alert">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i><%= error %>
+                            <button type="button" class="btn-close btn-close-white opacity-50" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    <% } %>
+                    <form action="/login" method="POST">
+                        <div class="mb-4">
+                            <label class="form-label text-white-50 fw-semibold small text-uppercase tracking-wide">Clearance Email</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                <input type="email" class="form-control" name="email" required placeholder="admin@nexus.vault" autofocus>
+                            </div>
+                        </div>
+                        <div class="mb-5">
+                            <label class="form-label text-white-50 fw-semibold small text-uppercase tracking-wide">Security Key</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-shield-lock"></i></span>
+                                <input type="password" class="form-control" name="password" required placeholder="••••••••">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-glow btn-primary-glow w-100 py-3 fw-bold fs-5 shadow-lg">Initiate Secure Uplink</button>
+                    </form>
+                </div>
+                <div class="card-footer border-top border-light border-opacity-10 bg-transparent text-center py-4 text-white-50 small">
+                    &copy; <script>document.write(new Date().getFullYear())</script> Nexus Security Systems. All rights reserved.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<%- include('partials/footer') %>

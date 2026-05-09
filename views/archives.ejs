@@ -1,0 +1,85 @@
+<%- include('partials/header', { currentPath: 'archives' }) %>
+
+<div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-light border-opacity-10">
+    <div>
+        <h2 class="fw-bold mb-1"><i class="bi bi-folder2-open me-2 text-primary"></i>Document Vault</h2>
+        <p class="text-muted mb-0">Browse and manage secure institutional artifacts</p>
+    </div>
+    <a href="/archives/upload" class="btn-glow btn-primary-glow px-4 py-2 text-decoration-none">
+        <i class="bi bi-plus-circle me-2"></i>New Artifact
+    </a>
+</div>
+
+<!-- Search Logic -->
+<div class="glass-card mb-5 p-4">
+    <form action="/archives/search" method="GET" class="row gx-3 gy-2 align-items-center">
+        <div class="col-md-5">
+            <div class="input-group">
+                <span class="input-group-text border-end-0"><i class="bi bi-search"></i></span>
+                <input type="text" class="form-control border-start-0" name="q" placeholder="Quantum search by title or filename..." value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>">
+            </div>
+        </div>
+        <div class="col-md-4">
+            <select class="form-select" name="category_id">
+                <option value="">-- All Classifications --</option>
+                <% categories.forEach(cat => { %>
+                    <option value="<%= cat.id %>"><%= cat.name %></option>
+                <% }) %>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <button type="submit" class="btn btn-primary w-100 fw-bold rounded-pill" style="background: var(--primary); border:none;">Execute Filter</button>
+        </div>
+    </form>
+</div>
+
+<div class="glass-card table-responsive">
+    <table class="table table-dark table-hover mb-0 align-middle">
+        <thead>
+            <tr>
+                <th class="ps-4 py-3">Artifact Title</th>
+                <th class="py-3">Classification</th>
+                <th class="py-3">Format</th>
+                <th class="py-3">Originator</th>
+                <th class="py-3">Timestamp</th>
+                <th class="text-end pe-4 py-3">Operations</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (archives && archives.length > 0) { %>
+                <% archives.forEach(archive => { %>
+                    <tr>
+                        <td class="ps-4 py-3 fw-semibold text-white">
+                            <i class="bi bi-file-earmark-text me-2 text-primary opacity-75"></i><%= archive.title %>
+                        </td>
+                        <td class="py-3"><span class="badge bg-secondary bg-opacity-25 text-light border border-secondary rounded-pill px-3"><%= archive.cat_name %></span></td>
+                        <td class="py-3">
+                            <span class="badge bg-dark border border-secondary text-white-50 px-2 py-1">
+                                <%= archive.file_type.split('/')[1] || 'FILE' %>
+                            </span>
+                        </td>
+                        <td class="py-3 text-muted"><%= archive.uploader %></td>
+                        <td class="py-3 text-muted"><%= new Date(archive.upload_date).toLocaleDateString() %></td>
+                        <td class="text-end pe-4 py-3">
+                            <a href="/archives/download/<%= archive.id %>" class="btn btn-sm btn-outline-glow rounded-pill px-3" title="Secure Fetch">
+                                <i class="bi bi-cloud-download me-1"></i> Retrieve
+                            </a>
+                        </td>
+                    </tr>
+                <% }) %>
+            <% } else { %>
+                <tr>
+                    <td colspan="6" class="text-center py-5">
+                        <div class="my-4">
+                            <i class="bi bi-folder-x display-1 d-block mb-3 text-muted opacity-25"></i>
+                            <h4 class="text-white">Vault Segment Empty</h4>
+                            <p class="text-muted">Adjust quantum filter parameters or provision a new artifact.</p>
+                        </div>
+                    </td>
+                </tr>
+            <% } %>
+        </tbody>
+    </table>
+</div>
+
+<%- include('partials/footer') %>

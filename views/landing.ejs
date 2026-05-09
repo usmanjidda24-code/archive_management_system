@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus | Web Archive Management System</title>
+    <!-- Modern Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Animation Libraries -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-glow: rgba(99, 102, 241, 0.5);
+            --secondary: #8b5cf6;
+            --accent: #ec4899;
+            --dark-bg: #030712;
+            --glass-bg: rgba(17, 24, 39, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-main: #ffffff;
+            --text-muted: #d1d5db;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-main);
+            overflow-x: hidden;
+            margin: 0;
+            cursor: default;
+        }
+
+        h1, h2, h3, .brand-font {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        /* Interactive Particle Background */
+        #tsparticles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--dark-bg); }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--secondary); }
+
+        /* Glassmorphism Navbar */
+        .navbar-glass {
+            background: rgba(3, 7, 18, 0.3);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            transition: all 0.4s ease;
+            padding: 1.5rem 0;
+        }
+        .navbar-glass.scrolled {
+            padding: 1rem 0;
+            background: rgba(3, 7, 18, 0.85);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+        }
+
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.75rem;
+            letter-spacing: -0.5px;
+            color: var(--text-main) !important;
+        }
+        
+        .brand-icon {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-right: 8px;
+        }
+
+        .nav-link {
+            font-weight: 500;
+            color: var(--text-muted) !important;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+        
+        .nav-link:hover {
+            color: var(--text-main) !important;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 80%;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            padding-top: 120px;
+            overflow: hidden;
+        }
+
+        /* Gradients & Text Effects */
+        .text-gradient {
+            background: linear-gradient(135deg, #a78bfa, #3b82f6, #ec4899);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientMove 5s linear infinite;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+
+        .hero-title {
+            font-size: clamp(3rem, 6vw, 5.5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -2px;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.1rem, 2vw, 1.3rem);
+            color: var(--text-muted);
+            font-weight: 400;
+            max-width: 650px;
+            line-height: 1.6;
+        }
+
+        /* Dynamic Buttons */
+        .btn-glow {
+            padding: 18px 45px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-family: 'Outfit', sans-serif;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            font-size: 1.05rem;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            z-index: 1;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .btn-primary-glow {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: white;
+            box-shadow: 0 10px 20px var(--primary-glow);
+        }
+
+        .btn-primary-glow:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 30px var(--primary-glow);
+            color: white;
+        }
+        
+        .btn-primary-glow::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 50px;
+            background: linear-gradient(45deg, var(--secondary), var(--accent));
+            opacity: 0;
+            z-index: -1;
+            transition: opacity 0.4s ease;
+        }
+
+        .btn-primary-glow:hover::before {
+            opacity: 1;
+        }
+
+        .btn-outline-glow {
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-main);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-outline-glow:hover {
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-5px);
+            color: white;
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        /* 3D Floating Mockup */
+        .mockup-container {
+            perspective: 1000px;
+            transform-style: preserve-3d;
+        }
+
+        .mockup-glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.7),
+                        inset 0 1px 1px rgba(255,255,255,0.1);
+            transform: rotateY(-15deg) rotateX(5deg);
+            animation: float-3d 8s ease-in-out infinite alternate;
+            position: relative;
+        }
+
+        .mockup-glass::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
+            border-radius: 24px;
+            pointer-events: none;
+        }
+
+        @keyframes float-3d {
+            0% { transform: translateY(0px) rotateY(-15deg) rotateX(5deg); }
+            100% { transform: translateY(-30px) rotateY(-5deg) rotateX(10deg); }
+        }
+
+        .file-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .file-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateX(10px);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .file-icon {
+            width: 50px; height: 50px;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 24px;
+            margin-right: 20px;
+        }
+        
+        .icon-pdf { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+        .icon-word { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+
+        /* Stats Badge */
+        .stat-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 50px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        /* Glass Cards Section */
+        .feature-card {
+            background: rgba(17, 24, 39, 0.5);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 24px;
+            padding: 40px 30px;
+            height: 100%;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,255,255,0.06), transparent 40%);
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 30px 60px rgba(99, 102, 241, 0.2);
+            background: rgba(17, 24, 39, 0.7);
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-icon-wrapper {
+            width: 70px;
+            height: 70px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            margin-bottom: 30px;
+            position: relative;
+            transition: all 0.4s ease;
+        }
+
+        .feature-card:hover .feature-icon-wrapper {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-color: transparent;
+            transform: scale(1.1) rotate(-5deg);
+            box-shadow: 0 15px 30px var(--primary-glow);
+            color: white;
+        }
+        
+        .feature-icon-wrapper i {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: all 0.4s ease;
+        }
+        
+        .feature-card:hover .feature-icon-wrapper i {
+            -webkit-text-fill-color: white;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Interactive Particle Background -->
+    <div id="tsparticles"></div>
+
+    <!-- Glassmorphism Navbar -->
+    <nav class="navbar navbar-expand-lg fixed-top navbar-glass" id="navbar">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="/">
+                <i class="bi bi-heptagon-fill brand-icon"></i> 
+                Nexus<span class="fw-light ms-1 opacity-75">Archive</span>
+            </a>
+            <button class="navbar-toggler shadow-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <i class="bi bi-list fs-1 text-white"></i>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav align-items-center gap-2">
+                    <li class="nav-item"><a class="nav-link px-3" href="#features">Platform</a></li>
+                    <li class="nav-item"><a class="nav-link px-3" href="#security">Security</a></li>
+                    <% if (user && user.userId) { %>
+                        <li class="nav-item ms-lg-4 mt-3 mt-lg-0">
+                            <a class="btn-glow btn-primary-glow" href="/dashboard">
+                                Proceed to Dashboard <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </li>
+                    <% } else { %>
+                        <li class="nav-item ms-lg-4 mt-3 mt-lg-0">
+                            <a class="btn-glow btn-outline-glow" href="/login">
+                                <i class="bi bi-person-circle"></i> Authenticate
+                            </a>
+                        </li>
+                    <% } %>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center gy-5">
+                
+                <!-- Left Content -->
+                <div class="col-lg-6 z-index-2" data-aos="fade-right" data-aos-duration="1200">
+                    <div class="d-inline-flex align-items-center gap-2 px-3 py-2 rounded-pill bg-dark border border-secondary mb-4 filter-drop-shadow" style="background: rgba(255,255,255,0.05) !important;">
+                        <span class="spinner-grow spinner-grow-sm text-info" role="status"></span>
+                        <span class="text-info fw-semibold font-monospace small">System Online • v3.0</span>
+                    </div>
+                    
+                    <h1 class="hero-title text-white">
+                        Preserve your <br>
+                        <span class="text-gradient"><span id="typed-text"></span></span>
+                    </h1>
+                    
+                    <p class="hero-subtitle mb-5">
+                        The definitive next-generation vault for institutional document administration. 
+                        Experience highly secure, intelligent archiving designed for the modern enterprise.
+                    </p>
+                    
+                    <div class="d-flex flex-wrap gap-4">
+                        <a href="/login" class="btn-glow btn-primary-glow">
+                            Initialize Vault <i class="bi bi-shield-check"></i>
+                        </a>
+                        <a href="#features" class="btn-glow btn-outline-glow">
+                            Tour Platform
+                        </a>
+                    </div>
+                    
+                    <div class="mt-5 pt-4 d-flex align-items-center gap-4 border-top border-secondary opacity-75">
+                        <div class="d-flex flex-column">
+                            <h3 class="fw-bold text-white mb-0">99.9%</h3>
+                            <span class="small text-white-50">Uptime SLA</span>
+                        </div>
+                        <div class="d-flex flex-column">
+                            <h3 class="fw-bold text-white mb-0">AES-256</h3>
+                            <span class="small text-white-50">Encryption</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right 3D Mockup -->
+                <div class="col-lg-6 d-none d-lg-block">
+                    <div class="mockup-container ps-5" data-aos="zoom-in-up" data-aos-duration="1500" data-aos-delay="200">
+                        <div class="mockup-glass">
+                            
+                            <!-- Mockup Header -->
+                            <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom border-secondary">
+                                <div class="d-flex gap-2">
+                                    <div class="rounded-circle bg-danger" style="width:12px;height:12px"></div>
+                                    <div class="rounded-circle bg-warning" style="width:12px;height:12px"></div>
+                                    <div class="rounded-circle bg-success" style="width:12px;height:12px"></div>
+                                </div>
+                                <div class="stat-badge">
+                                    <i class="bi bi-check2-circle"></i> Real-time Sync
+                                </div>
+                            </div>
+                            
+                            <!-- Mockup Content -->
+                            <div class="mb-4">
+                                <h6 class="text-white-50 font-monospace mb-3">/vault/recent-uploads</h6>
+                                
+                                <div class="file-item">
+                                    <div class="file-icon icon-pdf"><i class="bi bi-filetype-pdf"></i></div>
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-1 text-white fw-bold">Q4_Financial_Audit.pdf</h6>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <small class="text-secondary">Finance Dept • 4.2 MB</small>
+                                            <span class="badge bg-primary bg-opacity-25 text-primary rounded-pill">Encrypted</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="file-item">
+                                    <div class="file-icon icon-word"><i class="bi bi-filetype-docx"></i></div>
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-1 text-white fw-bold">Strategic_Roadmap_2026.docx</h6>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <small class="text-secondary">Executive • 1.1 MB</small>
+                                            <span class="badge bg-primary bg-opacity-25 text-primary rounded-pill">Encrypted</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Loading skeleton -->
+                                <div class="d-flex gap-3 align-items-center mt-4 opacity-50">
+                                    <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+                                    <span class="text-white-50 small">Processing blockchain verification...</span>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-5 my-5 position-relative z-index-2">
+        <div class="container">
+            <div class="text-center mb-5 pb-3" data-aos="fade-up">
+                <span class="text-primary fw-bold tracking-wide text-uppercase small mb-2 d-block">Core Infrastructure</span>
+                <h2 class="display-5 fw-bold mb-4 text-white">Engineered for Excellence</h2>
+                <p class="text-muted mx-auto fs-5" style="max-width: 700px;">Nexus combines military-grade security protocols with a breathtaking interface, delivering an unprecedented archive experience.</p>
+            </div>
+
+            <div class="row g-5 pt-2" id="cards-container">
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-card">
+                        <div class="feature-icon-wrapper"><i class="bi bi-rocket-takeoff-fill"></i></div>
+                        <h4 class="fw-bold mb-3 text-white brand-font">Quantum Search</h4>
+                        <p class="text-muted">Instantly retrieve documents from thousands of records utilizing advanced contextual indexing and multi-layer metadata mapping.</p>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-card">
+                        <div class="feature-icon-wrapper"><i class="bi bi-shield-check"></i></div>
+                        <h4 class="fw-bold mb-3 text-white brand-font">Zero-Trust Vault</h4>
+                        <p class="text-muted">Every file is subjected to strict middleware validation. Your data is isolated, encrypted, and physically safeguarded from unauthorized access.</p>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-card">
+                        <div class="feature-icon-wrapper"><i class="bi bi-diagram-3-fill"></i></div>
+                        <h4 class="fw-bold mb-3 text-white brand-font">Granular Hierarchy</h4>
+                        <p class="text-muted">Implement meticulous Access Control Lists (ACL) to seamlessly segregate departmental data and enforce absolute chain-of-command privacy.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- JS Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles-engine@2.12.0/tsparticles.engine.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles-basic@2.12.0/tsparticles.basic.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles-interaction-particles-links@2.12.0/tsparticles.interaction.particles.links.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles-move-base@2.12.0/tsparticles.move.base.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles-shape-circle@2.12.0/tsparticles.shape.circle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles-updater-color@2.12.0/tsparticles.updater.color.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles-updater-opacity@2.12.0/tsparticles.updater.opacity.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles-updater-size@2.12.0/tsparticles.updater.size.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles-preset-bubbles@2.12.0/tsparticles.preset.bubbles.min.js"></script>
+
+    <script>
+        // Initialize AOS
+        AOS.init({ once: true, offset: 50 });
+
+        // Navbar Scroll Effect
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+
+        // Typed.js Initialization
+        var typed = new Typed('#typed-text', {
+            strings: ['Digital Legacy.', 'Corporate Data.', 'Secure Artifacts.', 'Institutional Wealth.'],
+            typeSpeed: 60,
+            backSpeed: 40,
+            backDelay: 2000,
+            loop: true,
+            cursorChar: '|',
+            autoInsertCss: true
+        });
+
+        // Mouse move effect for glass cards
+        document.getElementById('cards-container').onmousemove = e => {
+            for(const card of document.getElementsByClassName("feature-card")) {
+                const rect = card.getBoundingClientRect(),
+                      x = e.clientX - rect.left,
+                      y = e.clientY - rect.top;
+                card.style.setProperty("--mouse-x", `${x}px`);
+                card.style.setProperty("--mouse-y", `${y}px`);
+            };
+        }
+
+        // Initialize tsParticles with a beautiful constellation/network effect
+        async function loadParticles(options) {
+            await window.tsParticles.load("tsparticles", {
+                fpsLimit: 120,
+                interactivity: {
+                    events: {
+                        onHover: { enable: true, mode: "grab" },
+                        resize: true,
+                    },
+                    modes: {
+                        grab: { distance: 140, links: { opacity: 0.5 } }
+                    },
+                },
+                particles: {
+                    color: { value: ["#6366f1", "#ec4899", "#8b5cf6"] },
+                    links: {
+                        color: "#ffffff",
+                        distance: 150,
+                        enable: true,
+                        opacity: 0.1,
+                        width: 1,
+                    },
+                    move: {
+                        direction: "none",
+                        enable: true,
+                        outModes: { default: "bounce" },
+                        random: false,
+                        speed: 1,
+                        straight: false,
+                    },
+                    number: {
+                        density: { enable: true, area: 800 },
+                        value: 60,
+                    },
+                    opacity: {
+                        value: 0.3,
+                        animation: {
+                            enable: true,
+                            speed: 1,
+                            minimumValue: 0.1,
+                            sync: false
+                        }
+                    },
+                    shape: { type: "circle" },
+                    size: { 
+                        value: { min: 1, max: 4 },
+                        animation: { enable: true, speed: 2, minimumValue: 0.5, sync: false }
+                    },
+                },
+                detectRetina: true,
+            });
+        }
+        
+        // Load the tsParticles engine elements then init
+        async function initParticles() {
+            try {
+                await loadParticles();
+            } catch (error) {
+                console.log("Particles load deferred:", error);
+            }
+        }
+        
+        initParticles();
+    </script>
+</body>
+</html>
+
