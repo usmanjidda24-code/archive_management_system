@@ -18,11 +18,20 @@ const storage = multer.diskStorage({
 });
 
 const fileFilter = (req, file, cb) => {
-    const allowedTypes = /jpeg|jpg|png|pdf|doc|docx/;
-    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-    const mimetype = allowedTypes.test(file.mimetype);
+    const allowedExtensions = new Set(['.jpeg', '.jpg', '.png', '.pdf', '.doc', '.docx']);
+    const allowedMimeTypes = new Set([
+        'image/jpeg',
+        'image/png',
+        'application/pdf',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    ]);
 
-    if (extname && mimetype) {
+    const fileExtension = path.extname(file.originalname).toLowerCase();
+    const isValidExtension = allowedExtensions.has(fileExtension);
+    const isValidMimeType = allowedMimeTypes.has(file.mimetype);
+
+    if (isValidExtension && isValidMimeType) {
         return cb(null, true);
     } else {
         cb(new Error('Invalid file type! Only PDF, DOC/DOCX, and images are allowed.'));

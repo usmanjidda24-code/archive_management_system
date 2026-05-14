@@ -1,21 +1,121 @@
 <%- include('partials/header', { currentPath: 'dashboard' }) %>
 
-<div class="d-flex justify-content-between align-items-center mb-5">
+<style>
+    /* Dashboard Specific Animations */
+    .fade-in-up {
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    
+    @keyframes fadeInUp {
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .stagger-1 { animation-delay: 0.1s; }
+    .stagger-2 { animation-delay: 0.2s; }
+    .stagger-3 { animation-delay: 0.3s; }
+    .stagger-4 { animation-delay: 0.4s; }
+    
+    .pulse-status {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: #10b981;
+        margin-right: 8px;
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+        animation: pulseStatus 2s infinite;
+    }
+    
+    @keyframes pulseStatus {
+        0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+        70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+        100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
+    .quick-action-card {
+        transition: all 0.3s ease;
+        border: 1px solid var(--glass-border);
+        background: rgba(255, 255, 255, 0.03);
+        cursor: pointer;
+    }
+    
+    .quick-action-card:hover {
+        background: rgba(255, 255, 255, 0.08);
+        transform: translateY(-5px);
+        border-color: var(--primary-glow);
+    }
+    
+    .quick-action-card i {
+        transition: all 0.3s ease;
+    }
+    
+    .quick-action-card:hover i {
+        transform: scale(1.1);
+        color: var(--text-main) !important;
+    }
+    
+    .chart-container {
+        position: relative;
+        height: 300px;
+        width: 100%;
+    }
+</style>
+
+<div class="d-flex justify-content-between align-items-center mb-5 fade-in-up stagger-1">
     <div>
-        <h2 class="fw-bold mb-1"><i class="bi bi-speedometer2 me-2 text-primary"></i>System Dashboard</h2>
-        <p class="text-muted mb-0">Monitor your archive vault and operations</p>
+        <h2 class="fw-bold mb-1 brand-font"><span id="dynamic-greeting">Welcome</span>, <%= user.fullName %></h2>
+        <p class="text-muted mb-0"><i class="bi bi-speedometer2 me-2 text-primary"></i>Monitor your archive vault and operations</p>
     </div>
-    <div class="px-3 py-2 rounded-pill bg-dark border border-secondary text-info fw-semibold font-monospace small" style="background: rgba(255,255,255,0.05) !important;">
-        <i class="bi bi-calendar3 me-2"></i><%= new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %>
+    <div class="px-3 py-2 rounded-pill bg-dark border border-secondary text-info fw-semibold font-monospace small d-flex align-items-center" style="background: rgba(255,255,255,0.05) !important;">
+        <div class="pulse-status"></div>
+        <span>System Online &bull; <%= new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }) %></span>
     </div>
 </div>
 
-<div class="row mb-5 g-4">
+<!-- Quick Actions -->
+<div class="row mb-5 g-3 fade-in-up stagger-2">
+    <div class="col-md-3 col-sm-6">
+        <a href="/archives/upload" class="text-decoration-none">
+            <div class="quick-action-card p-3 rounded-4 text-center">
+                <i class="bi bi-cloud-arrow-up fs-2 text-primary d-block mb-2"></i>
+                <span class="text-white fw-semibold">Upload Artifact</span>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <a href="/archives" class="text-decoration-none">
+            <div class="quick-action-card p-3 rounded-4 text-center">
+                <i class="bi bi-folder2-open fs-2 text-success d-block mb-2"></i>
+                <span class="text-white fw-semibold">Browse Vault</span>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <a href="/archives/search" class="text-decoration-none">
+            <div class="quick-action-card p-3 rounded-4 text-center">
+                <i class="bi bi-search fs-2 text-info d-block mb-2"></i>
+                <span class="text-white fw-semibold">Deep Search</span>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <a href="/archives" class="text-decoration-none">
+            <div class="quick-action-card p-3 rounded-4 text-center">
+                <i class="bi bi-file-earmark-bar-graph fs-2 text-warning d-block mb-2"></i>
+                <span class="text-white fw-semibold">Generate Report</span>
+            </div>
+        </a>
+    </div>
+</div>
+
+<div class="row mb-5 g-4 fade-in-up stagger-3">
     <div class="col-md-4">
         <div class="stat-card stat-primary text-white shadow">
             <h5 class="opacity-75 mb-3 font-monospace small tracking-wide">Total Archives</h5>
             <div class="d-flex justify-content-between align-items-end">
-                <h2 class="display-4 fw-bold mb-0"><%= total_archives %></h2>
+                <h2 class="display-4 fw-bold mb-0 counter-value" data-target="<%= total_archives %>">0</h2>
                 <i class="bi bi-file-earmark-text display-4 opacity-25"></i>
             </div>
             <div class="mt-3 pt-3 border-top border-light border-opacity-25 small">
@@ -27,7 +127,7 @@
         <div class="stat-card stat-success text-white shadow">
             <h5 class="opacity-75 mb-3 font-monospace small tracking-wide">Active Personnel</h5>
             <div class="d-flex justify-content-between align-items-end">
-                <h2 class="display-4 fw-bold mb-0"><%= total_users %></h2>
+                <h2 class="display-4 fw-bold mb-0 counter-value" data-target="<%= total_users %>">0</h2>
                 <i class="bi bi-people-fill display-4 opacity-25"></i>
             </div>
             <div class="mt-3 pt-3 border-top border-light border-opacity-25 small">
@@ -36,54 +136,119 @@
         </div>
     </div>
     <div class="col-md-4">
-        <div class="stat-card stat-info text-white shadow">
-            <h5 class="opacity-75 mb-3 font-monospace small tracking-wide">System Status</h5>
-            <div class="d-flex justify-content-between align-items-end">
-                <h2 class="display-4 fw-bold mb-0">Online</h2>
-                <i class="bi bi-shield-check display-4 opacity-25"></i>
-            </div>
-            <div class="mt-3 pt-3 border-top border-light border-opacity-25 small">
-                All vault services operational
+        <div class="glass-card p-4 h-100 d-flex flex-column justify-content-center">
+            <h5 class="opacity-75 mb-3 font-monospace small tracking-wide text-white">System Load Overview</h5>
+            <div class="chart-container" style="height:300px;">
+                <canvas id="archiveChart"></canvas>
             </div>
         </div>
     </div>
 </div>
 
-<h4 class="mb-4 brand-font"><i class="bi bi-clock-history me-2 text-primary"></i>Recent Artifacts</h4>
-<div class="glass-card table-responsive">
-    <table class="table table-dark table-hover mb-0 align-middle">
-        <thead>
-            <tr>
-                <th class="ps-4 py-3">Artifact Title</th>
-                <th class="py-3">Classification</th>
-                <th class="py-3">Originator</th>
-                <th class="py-3">Timestamp</th>
-                <th class="text-end pe-4 py-3">Operations</th>
-            </tr>
-        </thead>
-        <tbody>
-            <% if (recent_archives && recent_archives.length > 0) { %>
-                <% recent_archives.forEach(archive => { %>
-                    <tr>
-                        <td class="ps-4 py-3 fw-semibold"><i class="bi bi-file-earmark-pdf me-2 text-danger"></i><%= archive.title %></td>
-                        <td class="py-3"><span class="badge bg-secondary bg-opacity-25 text-light border border-secondary rounded-pill px-3"><%= archive.cat_name %></span></td>
-                        <td class="py-3"><%= archive.uploader %></td>
-                        <td class="py-3"><%= new Date(archive.upload_date).toLocaleDateString() %></td>
-                        <td class="text-end pe-4 py-3">
-                            <a href="/archives/download/<%= archive.id %>" class="btn btn-sm btn-outline-glow rounded-pill px-3">
-                                <i class="bi bi-cloud-download me-1"></i> Retrieve
-                            </a>
-                        </td>
-                    </tr>
-                <% }) %>
-            <% } else { %>
-                <tr><td colspan="5" class="text-center text-muted py-5">
-                    <i class="bi bi-inbox fs-1 d-block mb-3 opacity-25"></i>
-                    No artifacts cataloged recently.
-                </td></tr>
-            <% } %>
-        </tbody>
-    </table>
+<div class="fade-in-up stagger-4">
+    <div class="d-flex justify-content-between align-items-end mb-4">
+        <h4 class="mb-0 brand-font"><i class="bi bi-clock-history me-2 text-primary"></i>Recent Artifacts</h4>
+        <a href="/archives" class="btn btn-sm btn-outline-glow rounded-pill px-3">View All Vault <i class="bi bi-arrow-right ms-1"></i></a>
+    </div>
+    <div class="glass-card table-responsive">
+        <table class="table table-dark table-hover mb-0 align-middle">
+            <thead>
+                <tr>
+                    <th class="ps-4 py-3">Artifact Title</th>
+                    <th class="py-3">Classification</th>
+                    <th class="py-3">Originator</th>
+                    <th class="py-3">Timestamp</th>
+                    <th class="text-end pe-4 py-3">Operations</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (recent_archives && recent_archives.length > 0) { %>
+                    <% recent_archives.forEach(archive => { %>
+                        <tr>
+                            <td class="ps-4 py-3 fw-semibold"><i class="bi bi-file-earmark-pdf me-2 text-danger"></i><%= archive.title %></td>
+                            <td class="py-3"><span class="badge bg-secondary bg-opacity-25 text-light border border-secondary rounded-pill px-3"><%= archive.cat_name %></span></td>
+                            <td class="py-3"><%= archive.uploader %></td>
+                            <td class="py-3"><%= new Date(archive.upload_date).toLocaleDateString() %></td>
+                            <td class="text-end pe-4 py-3">
+                                <a href="/archives/download/<%= archive.id %>" class="btn btn-sm btn-outline-glow rounded-pill px-3">
+                                    <i class="bi bi-cloud-download me-1"></i> Retrieve
+                                </a>
+                            </td>
+                        </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr><td colspan="5" class="text-center text-muted py-5">
+                        <i class="bi bi-inbox fs-1 d-block mb-3 opacity-25"></i>
+                        No artifacts cataloged recently.
+                    </td></tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
 </div>
+
+<!-- Include Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    // 1. Dynamic Greeting
+    const hour = new Date().getHours();
+    const greetingEl = document.getElementById('dynamic-greeting');
+    if (greetingEl) {
+        if (hour < 12) greetingEl.textContent = 'Good Morning';
+        else if (hour < 18) greetingEl.textContent = 'Good Afternoon';
+        else greetingEl.textContent = 'Good Evening';
+    }
+
+    // 2. Animated Number Counters
+    const counters = document.querySelectorAll('.counter-value');
+    const speed = 200; 
+
+    counters.forEach(counter => {
+        const updateCount = () => {
+            const target = +counter.getAttribute('data-target');
+            const count = +counter.innerText;
+            const inc = target / speed;
+
+            if (count < target) {
+                counter.innerText = Math.ceil(count + inc);
+                setTimeout(updateCount, 15);
+            } else {
+                counter.innerText = target;
+            }
+        };
+        updateCount();
+    });
+
+    // 3. Initialize Chart.js
+    const chartCanvas = document.getElementById("archiveChart");
+
+    if (chartCanvas && typeof Chart !== "undefined") {
+        new Chart(chartCanvas, {
+            type: "line",
+            data: {
+                labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+                datasets: [{
+                    label: "Archive Uploads",
+                    data: [5, 9, 7, 12, 10, 15],
+                    borderColor: '#6366f1',
+                    backgroundColor: 'rgba(99, 102, 241, 0.2)',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+    } else {
+        console.log("Chart.js failed to load.");
+    }
+
+});
+</script>
 
 <%- include('partials/footer') %>

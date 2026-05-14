@@ -44,10 +44,12 @@ app.use((req, res, next) => {
 // Import Routes
 const authRoutes = require('./routes/authRoutes');
 const archiveRoutes = require('./routes/archiveRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 
 // Use Routes
 app.use('/', authRoutes);
 app.use('/', archiveRoutes);
+app.use('/admin', adminRoutes);
 
 // Root Route (Landing Page)
 app.get('/', (req, res) => {

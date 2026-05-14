@@ -213,6 +213,12 @@
                 <a href="/archives/upload" class="sidebar-link <%= typeof currentPath !== 'undefined' && currentPath === 'upload' ? 'active' : '' %>">
                     <i class="bi bi-cloud-arrow-up me-3 fs-5"></i>Upload Artifact
                 </a>
+                <% if (user && user.role === 'admin') { %>
+                <div class="text-uppercase text-muted small fw-bold mb-3 mt-4 px-3 tracking-wide" style="letter-spacing: 1px;">Administration</div>
+                <a href="/admin/dashboard" class="sidebar-link <%= typeof currentPath !== 'undefined' && currentPath === 'admin' ? 'active' : '' %>">
+                    <i class="bi bi-shield-lock me-3 fs-5"></i>Admin Panel
+                </a>
+                <% } %>
             </div>
             <!-- Main Content -->
             <div class="col-md-10 py-4 px-lg-5">

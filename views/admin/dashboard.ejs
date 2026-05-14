@@ -1,0 +1,187 @@
+<%- include('../partials/header') %>
+
+<style>
+    /* Dashboard Specific Animations */
+    .fade-in-up {
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    
+    @keyframes fadeInUp {
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .stagger-1 { animation-delay: 0.1s; }
+    .stagger-2 { animation-delay: 0.2s; }
+    .stagger-3 { animation-delay: 0.3s; }
+    .stagger-4 { animation-delay: 0.4s; }
+    
+    .pulse-status {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: #10b981;
+        margin-right: 8px;
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+        animation: pulseStatus 2s infinite;
+    }
+    
+    @keyframes pulseStatus {
+        0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+        70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+        100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4 fade-in-up stagger-1">
+        <div>
+            <h2 class="fw-bold mb-1 brand-font"><span id="dynamic-greeting">Welcome</span>, <%= user && user.fullName ? user.fullName : 'Admin' %></h2>
+            <p class="text-muted mb-0"><i class="bi bi-shield-lock text-primary me-2"></i>Admin Dashboard & System Metrics</p>
+        </div>
+        <div class="px-3 py-2 rounded-pill bg-dark border border-secondary text-info fw-semibold font-monospace small d-flex align-items-center" style="background: rgba(255,255,255,0.05) !important;">
+            <div class="pulse-status"></div>
+            <span>System Online &bull; <%= new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }) %></span>
+        </div>
+    </div>
+
+    <!-- Admin Sub-navigation -->
+    <ul class="nav nav-pills mb-4 pb-2 border-bottom border-secondary border-opacity-25 fade-in-up stagger-1">
+        <li class="nav-item">
+            <a class="nav-link active rounded-pill px-4" href="/admin/dashboard"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white rounded-pill px-4" href="/admin/users"><i class="bi bi-people me-2"></i>Users</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white rounded-pill px-4" href="/admin/categories"><i class="bi bi-tags me-2"></i>Categories</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white rounded-pill px-4" href="/admin/departments"><i class="bi bi-building me-2"></i>Departments</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white rounded-pill px-4" href="/admin/logs"><i class="bi bi-journal-text me-2"></i>Activity Logs</a>
+        </li>
+    </ul>
+
+    <!-- Statistics Cards -->
+    <div class="row g-4 mb-5 fade-in-up stagger-2">
+        <div class="col-md-3">
+            <div class="stat-card stat-primary text-white h-100 shadow">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="text-white-50 text-uppercase tracking-wider mb-1">Total Users</h6>
+                        <h2 class="display-5 fw-bold mb-0 counter-value" data-target="<%= total_users %>">0</h2>
+                    </div>
+                    <div class="fs-1 opacity-50"><i class="bi bi-people-fill"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card stat-success text-white h-100 shadow">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="text-white-50 text-uppercase tracking-wider mb-1">Total Archives</h6>
+                        <h2 class="display-5 fw-bold mb-0 counter-value" data-target="<%= total_archives %>">0</h2>
+                    </div>
+                    <div class="fs-1 opacity-50"><i class="bi bi-file-earmark-text-fill"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card stat-info text-white h-100 shadow">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="text-white-50 text-uppercase tracking-wider mb-1">Categories</h6>
+                        <h2 class="display-5 fw-bold mb-0 counter-value" data-target="<%= total_categories %>">0</h2>
+                    </div>
+                    <div class="fs-1 opacity-50"><i class="bi bi-tags-fill"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card bg-secondary bg-gradient text-white h-100 border-0 shadow">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="text-white-50 text-uppercase tracking-wider mb-1">Departments</h6>
+                        <h2 class="display-5 fw-bold mb-0 counter-value" data-target="<%= total_departments %>">0</h2>
+                    </div>
+                    <div class="fs-1 opacity-50"><i class="bi bi-building-fill"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="glass-card mb-4 fade-in-up stagger-3">
+        <div class="glass-header p-3 d-flex justify-content-between align-items-center">
+            <h5 class="mb-0 brand-font"><i class="bi bi-clock-history me-2"></i>Recent Activity</h5>
+            <a href="/admin/logs" class="btn btn-sm btn-outline-glow rounded-pill">View All Logs</a>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-dark table-hover mb-0 align-middle">
+                    <thead>
+                        <tr>
+                            <th class="ps-4">User</th>
+                            <th>Action</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (recent_logs && recent_logs.length > 0) { %>
+                            <% recent_logs.forEach(log => { %>
+                                <tr>
+                                    <td class="ps-4 text-primary fw-medium"><%= log.user_name %></td>
+                                    <td><%= log.action %></td>
+                                    <td class="text-muted small"><%= new Date(log.created_at).toLocaleString() %></td>
+                                </tr>
+                            <% }) %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="3" class="text-center py-4 text-muted">No recent activity.</td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Dynamic Greeting
+    const hour = new Date().getHours();
+    const greetingEl = document.getElementById('dynamic-greeting');
+    if (greetingEl) {
+        if (hour < 12) greetingEl.textContent = 'Good Morning';
+        else if (hour < 18) greetingEl.textContent = 'Good Afternoon';
+        else greetingEl.textContent = 'Good Evening';
+    }
+
+    // Animated Number Counters
+    const counters = document.querySelectorAll('.counter-value');
+    const speed = 200; 
+
+    counters.forEach(counter => {
+        const updateCount = () => {
+            const target = +counter.getAttribute('data-target');
+            const count = +counter.innerText;
+            const inc = target / speed;
+
+            if (count < target) {
+                counter.innerText = Math.ceil(count + inc);
+                setTimeout(updateCount, 15);
+            } else {
+                counter.innerText = target;
+            }
+        };
+        updateCount();
+    });
+});
+</script>
+
+<%- include('../partials/footer') %>

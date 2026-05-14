@@ -70,7 +70,13 @@ exports.getArchivesList = async (req, res) => {
         
         const [categories] = await db.query('SELECT * FROM categories');
 
-        res.render('archives', { archives, categories, user: req.session, searchQuery: '' });
+        res.render('archives', {
+            archives,
+            categories,
+            user: req.session,
+            searchQuery: '',
+            selectedCategoryId: ''
+        });
     } catch (error) {
         console.error(error);
         res.status(500).send('Server Error');
@@ -101,7 +107,13 @@ exports.searchArchives = async (req, res) => {
         const [archives] = await db.query(sql, params);
         const [categories] = await db.query('SELECT * FROM categories');
 
-        res.render('archives', { archives, categories, user: req.session, searchQuery: q });
+        res.render('archives', {
+            archives,
+            categories,
+            user: req.session,
+            searchQuery: q || '',
+            selectedCategoryId: category_id || ''
+        });
     } catch (error) {
         console.error(error);
         res.status(500).send('Server Error');

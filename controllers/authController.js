@@ -32,7 +32,7 @@ exports.postLogin = async (req, res) => {
         // Log the login action
         await db.query("INSERT INTO activity_logs (user_id, action) VALUES (?, ?)", [user.id, 'Logged in to system']);
 
-        const redirectUrl = req.session.returnTo || '/dashboard';
+        const redirectUrl = req.session.returnTo || '/';
         delete req.session.returnTo;
         res.redirect(redirectUrl);
 
